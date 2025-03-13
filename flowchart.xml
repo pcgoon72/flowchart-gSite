@@ -1,0 +1,10 @@
+<flowchart>
+  <node id="Start" x="50" y="100" info="This is the start." />
+  <node id="Step 1" x="200" y="100" info="First step." />
+  <node id="Step 2" x="350" y="100" info="Second step." />
+  <node id="End" x="500" y="100" info="This is the end." />
+
+  <link source="Start" target="Step 1" />
+  <link source="Step 1" target="Step 2" />
+  <link source="Step 2" target="End" />
+</flowchart>
