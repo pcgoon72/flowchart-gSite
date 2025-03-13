@@ -2,16 +2,29 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Flowchart from XML</title>
+  <title>Flowchart from XML with Info Box</title>
   <style>
     body { background-color: #121212; color: #f0f0f0; font-family: sans-serif; }
     svg { background-color: #1e1e1e; }
+    #info-box {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 8px;
+      background-color: #333;
+      color: #f0f0f0;
+      min-height: 50px;
+      font-size: 16px;
+    }
   </style>
 </head>
 <body>
 
-<h2>Dynamic Flowchart from XML</h2>
+<h2>Dynamic Flowchart from XML (Click a Step for Info)</h2>
+
 <svg width="700" height="300"></svg>
+
+<!-- Info box where the clicked step info will appear -->
+<div id="info-box">Click a step to see more information here.</div>
 
 <script src="https://d3js.org/d3.v7.min.js"></script>
 <script>
@@ -71,7 +84,9 @@
       .attr("class", "node")
       .attr("transform", d => `translate(${d.x},${d.y})`)
       .on("click", (event, d) => {
-        alert(`${d.id}: ${d.info}`);
+        // Update the info-box instead of alert
+        d3.select("#info-box")
+          .html(`<strong>${d.id}</strong>: ${d.info}`);
       });
 
     nodeGroup.append("rect")
@@ -81,7 +96,8 @@
       .attr("ry", 10)
       .attr("fill", "#4a90e2")
       .attr("stroke", "#888")
-      .attr("stroke-width", 1);
+      .attr("stroke-width", 1)
+      .style("cursor", "pointer");
 
     nodeGroup.append("text")
       .attr("x", 50)
