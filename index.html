@@ -2,18 +2,47 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Flowchart from XML with Info Box</title>
+  <title>Flowchart with Popup Info</title>
   <style>
-    body { background-color: #121212; color: #f0f0f0; font-family: sans-serif; }
-    svg { background-color: #1e1e1e; }
-    #info-box {
-      margin-top: 20px;
-      padding: 15px;
-      border-radius: 8px;
-      background-color: #333;
+    body {
+      background-color: #121212;
       color: #f0f0f0;
-      min-height: 50px;
-      font-size: 16px;
+      font-family: sans-serif;
+    }
+    svg {
+      background-color: #1e1e1e;
+    }
+    /* Modal Styles */
+    .modal {
+      display: none; /* Hidden by default */
+      position: fixed;
+      z-index: 10;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.7);
+    }
+    .modal-content {
+      background-color: #2a2a2a;
+      margin: 15% auto;
+      padding: 20px;
+      border-radius: 10px;
+      width: 400px;
+      color: #f0f0f0;
+      text-align: center;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    }
+    .close-btn {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .close-btn:hover {
+      color: #fff;
     }
   </style>
 </head>
@@ -23,8 +52,14 @@
 
 <svg width="700" height="300"></svg>
 
-<!-- Info box where the clicked step info will appear -->
-<div id="info-box">Click a step to see more information here.</div>
+<!-- Modal Popup -->
+<div id="infoModal" class="modal">
+  <div class="modal-content">
+    <span class="close-btn">&times;</span>
+    <h3 id="modal-title">Title</h3>
+    <p id="modal-text">Info about this step...</p>
+  </div>
+</div>
 
 <script src="https://d3js.org/d3.v7.min.js"></script>
 <script>
@@ -35,7 +70,6 @@
     const xmlNodes = data.documentElement.querySelectorAll("node");
     const xmlLinks = data.documentElement.querySelectorAll("link");
 
-    // Convert XML nodes into JS objects
     const nodes = Array.from(xmlNodes).map(node => ({
       id: node.getAttribute("id"),
       x: +node.getAttribute("x"),
@@ -63,7 +97,6 @@
         .attr("marker-end", "url(#arrow)");
     });
 
-    // Arrowhead marker
     svg.append("defs").append("marker")
       .attr("id", "arrow")
       .attr("viewBox", "0 0 10 10")
@@ -76,7 +109,6 @@
       .attr("d", "M 0 0 L 10 5 L 0 10 Z")
       .attr("fill", "#f0f0f0");
 
-    // Draw nodes
     const nodeGroup = svg.selectAll(".node")
       .data(nodes)
       .enter()
@@ -84,9 +116,10 @@
       .attr("class", "node")
       .attr("transform", d => `translate(${d.x},${d.y})`)
       .on("click", (event, d) => {
-        // Update the info-box instead of alert
-        d3.select("#info-box")
-          .html(`<strong>${d.id}</strong>: ${d.info}`);
+        // Show modal and update content
+        document.getElementById("modal-title").innerText = d.id;
+        document.getElementById("modal-text").innerText = d.info;
+        document.getElementById("infoModal").style.display = "block";
       });
 
     nodeGroup.append("rect")
@@ -109,6 +142,22 @@
   }).catch(err => {
     console.error("Error loading XML:", err);
   });
+
+  // Modal behavior
+  const modal = document.getElementById("infoModal");
+  const closeBtn = document.querySelector(".close-btn");
+
+  // Close when clicking the close button
+  closeBtn.onclick = function() {
+    modal.style.display = "none";
+  };
+
+  // Close when clicking outside the modal content
+  window.onclick = function(event) {
+    if (event.target === modal) {
+      modal.style.display = "none";
+    }
+  };
 </script>
 
 </body>
