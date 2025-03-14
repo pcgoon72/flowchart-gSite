@@ -200,24 +200,37 @@ nodeGroup.append("rect")
   .attr("ry", 10);
 
 // Helper function to split text into lines
-function wrapText(text, width) {
+function wrapText(text, width, maxLines = 3) {
   const words = text.split(" ");
   const lines = [];
   let currentLine = words[0];
 
   for (let i = 1; i < words.length; i++) {
     const word = words[i];
-    const widthEstimate = (currentLine + " " + word).length * 7; // 7px per character estimate
+    const widthEstimate = (currentLine + " " + word).length * 7; // rough estimate per character
+
     if (widthEstimate < width) {
       currentLine += " " + word;
     } else {
       lines.push(currentLine);
       currentLine = word;
+
+      // Check if we've hit the max lines limit
+      if (lines.length === maxLines - 1) {
+        currentLine += " ..."; // Add ellipsis on the last line
+        break; // stop adding more lines
+      }
     }
   }
-  lines.push(currentLine);
+
+  // Push the last line (if not already added)
+  if (lines.length < maxLines) {
+    lines.push(currentLine);
+  }
+
   return lines;
 }
+
 
 // Append text with wrapping
 nodeGroup.each(function(d) {
