@@ -86,8 +86,8 @@
   svg.append("text").attr("class", "lane-label").attr("x", 10).attr("y", 320).text("Study");
 
   const nodes = [
-    { id: "Step 1", x: 100, y: 100 },
-    { id: "Step 2", x: 250, y: 100 },
+    { id: "Create Study Timelines for GMT", x: 100, y: 100 },
+    { id: "Develop Reion/Country Strategy", x: 250, y: 100 },
     { id: "Step 3", x: 400, y: 100 },
     { id: "Step 4", x: 550, y: 100 },
     { id: "Step 5", x: 700, y: 100 },
@@ -99,8 +99,8 @@
   ];
 
   const links = [
-    { source: "Step 1", target: "Step 2" },
-    { source: "Step 2", target: "Step 3" },
+    { source: "Create Study Timelines for GMT", target: "Develop Reion/Country Strategy" },
+    { source: "Develop Reion/Country Strategy", target: "Step 3" },
     { source: "Step 3", target: "Step 4" },
     { source: "Step 4", target: "Step 5" },
     { source: "Step 5", target: "Step 6" },
