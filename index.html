@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Flowchart with Popup Info</title>
+  <title>Develop Operations Plan</title>
   <style>
     body {
       background-color: #121212;
@@ -12,16 +12,36 @@
     svg {
       background-color: #1e1e1e;
     }
+    .lane {
+      fill: #2a2a2a;
+      stroke: #444;
+      stroke-width: 1;
+    }
+    .lane-label {
+      fill: #ccc;
+      font-size: 14px;
+      font-weight: bold;
+    }
+    .node rect {
+      fill: #4a90e2;
+      stroke: #888;
+      stroke-width: 1;
+      cursor: pointer;
+    }
+    .node text {
+      fill: #fff;
+      font-size: 12px;
+      pointer-events: none;
+    }
     /* Modal Styles */
     .modal {
-      display: none; /* Hidden by default */
+      display: none;
       position: fixed;
       z-index: 10;
       left: 0;
       top: 0;
       width: 100%;
       height: 100%;
-      overflow: auto;
       background-color: rgba(0,0,0,0.7);
     }
     .modal-content {
@@ -48,9 +68,9 @@
 </head>
 <body>
 
-<h2>Dynamic Flowchart from XML (Click a Step for Info)</h2>
+<h2>Develop Operations Plan</h2>
 
-<svg width="700" height="300"></svg>
+<svg width="1000" height="400"></svg>
 
 <!-- Modal Popup -->
 <div id="infoModal" class="modal">
@@ -65,94 +85,134 @@
 <script>
   const svg = d3.select("svg");
 
-  // Load XML file
-  d3.xml("flowchart.xml").then(data => {
-    const xmlNodes = data.documentElement.querySelectorAll("node");
-    const xmlLinks = data.documentElement.querySelectorAll("link");
+  const width = +svg.attr("width");
+  const height = +svg.attr("height");
 
-    const nodes = Array.from(xmlNodes).map(node => ({
-      id: node.getAttribute("id"),
-      x: +node.getAttribute("x"),
-      y: +node.getAttribute("y"),
-      info: node.getAttribute("info")
-    }));
+  const laneHeight = height / 2;
 
-    const links = Array.from(xmlLinks).map(link => ({
-      source: link.getAttribute("source"),
-      target: link.getAttribute("target")
-    }));
+  // Add swimlanes
+  svg.append("rect")
+    .attr("x", 0)
+    .attr("y", 0)
+    .attr("width", width)
+    .attr("height", laneHeight)
+    .attr("class", "lane");
 
-    // Draw links
-    links.forEach(link => {
-      const source = nodes.find(n => n.id === link.source);
-      const target = nodes.find(n => n.id === link.target);
+  svg.append("text")
+    .attr("x", 10)
+    .attr("y", laneHeight / 2)
+    .attr("dy", ".35em")
+    .attr("class", "lane-label")
+    .text("Programme");
 
-      svg.append("line")
-        .attr("x1", source.x + 100)
-        .attr("y1", source.y + 25)
-        .attr("x2", target.x)
-        .attr("y2", target.y + 25)
-        .attr("stroke", "#f0f0f0")
-        .attr("stroke-width", 2)
-        .attr("marker-end", "url(#arrow)");
+  svg.append("rect")
+    .attr("x", 0)
+    .attr("y", laneHeight)
+    .attr("width", width)
+    .attr("height", laneHeight)
+    .attr("class", "lane");
+
+  svg.append("text")
+    .attr("x", 10)
+    .attr("y", laneHeight + laneHeight / 2)
+    .attr("dy", ".35em")
+    .attr("class", "lane-label")
+    .text("Study");
+
+  // Create nodes
+  const nodes = [];
+
+  // Programme steps (9 steps)
+  for (let i = 1; i <= 9; i++) {
+    nodes.push({
+      id: `Programme Step ${i}`,
+      x: 50 + (i - 1) * 100, // spacing each step by 100
+      y: laneHeight / 2 - 25,
+      info: `This is Programme Step ${i}.`
     });
+  }
 
-    svg.append("defs").append("marker")
-      .attr("id", "arrow")
-      .attr("viewBox", "0 0 10 10")
-      .attr("refX", 10)
-      .attr("refY", 5)
-      .attr("markerWidth", 6)
-      .attr("markerHeight", 6)
-      .attr("orient", "auto")
-      .append("path")
-      .attr("d", "M 0 0 L 10 5 L 0 10 Z")
-      .attr("fill", "#f0f0f0");
-
-    const nodeGroup = svg.selectAll(".node")
-      .data(nodes)
-      .enter()
-      .append("g")
-      .attr("class", "node")
-      .attr("transform", d => `translate(${d.x},${d.y})`)
-      .on("click", (event, d) => {
-        // Show modal and update content
-        document.getElementById("modal-title").innerText = d.id;
-        document.getElementById("modal-text").innerText = d.info;
-        document.getElementById("infoModal").style.display = "block";
-      });
-
-    nodeGroup.append("rect")
-      .attr("width", 100)
-      .attr("height", 50)
-      .attr("rx", 10)
-      .attr("ry", 10)
-      .attr("fill", "#4a90e2")
-      .attr("stroke", "#888")
-      .attr("stroke-width", 1)
-      .style("cursor", "pointer");
-
-    nodeGroup.append("text")
-      .attr("x", 50)
-      .attr("y", 30)
-      .attr("text-anchor", "middle")
-      .attr("fill", "#fff")
-      .attr("font-size", "14px")
-      .text(d => d.id);
-  }).catch(err => {
-    console.error("Error loading XML:", err);
+  // Study step under Programme Step 6
+  nodes.push({
+    id: "Study Step",
+    x: 50 + (6 - 1) * 100, // align with Programme Step 6
+    y: laneHeight + laneHeight / 2 - 25,
+    info: "This is the Study Step under Programme Step 6."
   });
 
-  // Modal behavior
+  const links = [
+    // Programme steps 1 ➡ 9
+    ...nodes.slice(0, 8).map((node, idx) => ({
+      source: node.id,
+      target: nodes[idx + 1].id
+    })),
+    // Programme Step 6 ➡ Study Step
+    { source: "Programme Step 6", target: "Study Step" },
+    // Study Step ➡ Programme Step 8
+    { source: "Study Step", target: "Programme Step 8" }
+  ];
+
+  // Draw links
+  links.forEach(link => {
+    const source = nodes.find(n => n.id === link.source);
+    const target = nodes.find(n => n.id === link.target);
+
+    svg.append("line")
+      .attr("x1", source.x + 100)
+      .attr("y1", source.y + 25)
+      .attr("x2", target.x)
+      .attr("y2", target.y + 25)
+      .attr("stroke", "#f0f0f0")
+      .attr("stroke-width", 2)
+      .attr("marker-end", "url(#arrow)");
+  });
+
+  // Add arrowhead marker
+  svg.append("defs").append("marker")
+    .attr("id", "arrow")
+    .attr("viewBox", "0 0 10 10")
+    .attr("refX", 10)
+    .attr("refY", 5)
+    .attr("markerWidth", 6)
+    .attr("markerHeight", 6)
+    .attr("orient", "auto")
+    .append("path")
+    .attr("d", "M 0 0 L 10 5 L 0 10 Z")
+    .attr("fill", "#f0f0f0");
+
+  // Draw nodes
+  const nodeGroup = svg.selectAll(".node")
+    .data(nodes)
+    .enter()
+    .append("g")
+    .attr("class", "node")
+    .attr("transform", d => `translate(${d.x},${d.y})`)
+    .on("click", (event, d) => {
+      document.getElementById("modal-title").innerText = d.id;
+      document.getElementById("modal-text").innerText = d.info;
+      document.getElementById("infoModal").style.display = "block";
+    });
+
+  nodeGroup.append("rect")
+    .attr("width", 100)
+    .attr("height", 50)
+    .attr("rx", 10)
+    .attr("ry", 10);
+
+  nodeGroup.append("text")
+    .attr("x", 50)
+    .attr("y", 30)
+    .attr("text-anchor", "middle")
+    .text(d => d.id);
+
+  // Modal functionality
   const modal = document.getElementById("infoModal");
   const closeBtn = document.querySelector(".close-btn");
 
-  // Close when clicking the close button
   closeBtn.onclick = function() {
     modal.style.display = "none";
   };
 
-  // Close when clicking outside the modal content
   window.onclick = function(event) {
     if (event.target === modal) {
       modal.style.display = "none";
