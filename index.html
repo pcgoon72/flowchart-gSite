@@ -126,12 +126,29 @@ links.forEach(link => {
   const source = nodes.find(n => n.id === link.source);
   const target = nodes.find(n => n.id === link.target);
 
-  if (link.source === "Study Step" && link.target === "Step 7") {
-    const startX = source.x + 100; // Right middle of Study Step
+  // Special case: Step 6 to Study Step (bottom middle to top middle)
+  if (link.source === "Step 6" && link.target === "Study Step") {
+    const x1 = source.x + 50; // middle bottom of Step 6
+    const y1 = source.y + 50;
+    const x2 = target.x + 50; // middle top of Study Step
+    const y2 = target.y;
+
+    svg.append("line")
+      .attr("x1", x1)
+      .attr("y1", y1)
+      .attr("x2", x2)
+      .attr("y2", y2)
+      .attr("stroke", "#f0f0f0")
+      .attr("stroke-width", 2)
+      .attr("marker-end", "url(#arrow)");
+
+  // Special case: Study Step to Step 7 with two right angles
+  } else if (link.source === "Study Step" && link.target === "Step 7") {
+    const startX = source.x + 100; // right middle of Study Step
     const startY = source.y + 25;
-    const midX = startX + 50; // Move horizontally right
-    const midY = target.y + 25; // Align vertically with Step 7
-    const endX = target.x; // Left side of Step 7
+    const midX = startX + 50; // move right
+    const midY = target.y + 25; // align vertically with Step 7
+    const endX = target.x; // left side of Step 7
     const endY = target.y + 25;
 
     const pathData = `
@@ -148,6 +165,7 @@ links.forEach(link => {
       .attr("stroke-width", 2)
       .attr("marker-end", "url(#arrow)");
 
+  // Default straight arrows for the rest
   } else {
     svg.append("line")
       .attr("x1", source.x + 100)
