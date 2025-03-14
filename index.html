@@ -192,17 +192,52 @@ links.forEach(link => {
       document.getElementById("infoModal").style.display = "block";
     });
 
-  nodeGroup.append("rect")
-    .attr("width", 100)
-    .attr("height", 50)
-    .attr("rx", 10)
-    .attr("ry", 10);
+// Draw the rectangle (keep this as-is)
+nodeGroup.append("rect")
+  .attr("width", 100)
+  .attr("height", 50)
+  .attr("rx", 10)
+  .attr("ry", 10);
 
-  nodeGroup.append("text")
-    .attr("x", 50)
-    .attr("y", 30)
-    .attr("text-anchor", "middle")
-    .text(d => d.id);
+// Helper function to split text into lines
+function wrapText(text, width) {
+  const words = text.split(" ");
+  const lines = [];
+  let currentLine = words[0];
+
+  for (let i = 1; i < words.length; i++) {
+    const word = words[i];
+    const widthEstimate = (currentLine + " " + word).length * 7; // 7px per character estimate
+    if (widthEstimate < width) {
+      currentLine += " " + word;
+    } else {
+      lines.push(currentLine);
+      currentLine = word;
+    }
+  }
+  lines.push(currentLine);
+  return lines;
+}
+
+// Append text with wrapping
+nodeGroup.each(function(d) {
+  const g = d3.select(this);
+  const maxWidth = 90; // Maximum width of text in box (adjust as needed)
+  const lines = wrapText(d.id, maxWidth);
+
+  const lineHeight = 14; // px between lines
+  const startY = (50 - (lines.length * lineHeight)) / 2 + 12; // center vertically
+
+  lines.forEach((line, i) => {
+    g.append("text")
+      .attr("x", 50) // center horizontally in a 100px wide box
+      .attr("y", startY + i * lineHeight)
+      .attr("text-anchor", "middle")
+      .style("font-size", "12px") // smaller font size
+      .text(line);
+  });
+});
+
 
   document.querySelector(".close-btn").onclick = function() {
     document.getElementById("infoModal").style.display = "none";
