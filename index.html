@@ -88,8 +88,8 @@
   const nodes = [
     { id: "Create Study Timelines for GMT", x: 100, y: 100 },
     { id: "Develop Reion/Country Strategy", x: 250, y: 100 },
-    { id: "Step 3", x: 400, y: 100 },
-    { id: "Step 4", x: 550, y: 100 },
+    { id: "Develop Draft Ops Plan", x: 400, y: 100 },
+    { id: "Draft Early Study Budget", x: 550, y: 100 },
     { id: "Step 5", x: 700, y: 100 },
     { id: "Step 6", x: 850, y: 100 },
     { id: "Study Step", x: 850, y: 350 },
@@ -100,9 +100,9 @@
 
   const links = [
     { source: "Create Study Timelines for GMT", target: "Develop Reion/Country Strategy" },
-    { source: "Develop Reion/Country Strategy", target: "Step 3" },
-    { source: "Step 3", target: "Step 4" },
-    { source: "Step 4", target: "Step 5" },
+    { source: "Develop Reion/Country Strategy", target: "Develop Draft Ops Plan" },
+    { source: "Develop Draft Ops Plan", target: "Draft Early Study Budget" },
+    { source: "Draft Early Study Budget", target: "Step 5" },
     { source: "Step 5", target: "Step 6" },
     { source: "Step 6", target: "Study Step" },
     { source: "Study Step", target: "Step 7" },
