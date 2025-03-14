@@ -127,7 +127,7 @@ links.forEach(link => {
   const target = nodes.find(n => n.id === link.target);
 
   // Special case: Step 6 to Study Step (bottom middle to top middle)
-  if (link.source === "Step 6" && link.target === "Study Step") {
+  if (link.source === "Refine Draft Ops Plan" && link.target === "Further Develop Ops Plan (Including Recruitment and Retention Plan)") {
     const x1 = source.x + 50; // middle bottom of Step 6
     const y1 = source.y + 50;
     const x2 = target.x + 50; // middle top of Study Step
@@ -143,7 +143,7 @@ links.forEach(link => {
       .attr("marker-end", "url(#arrow)");
 
   // Special case: Study Step to Step 7 with two right angles
-  } else if (link.source === "Study Step" && link.target === "Step 7") {
+  } else if (link.source === "Further Develop Ops Plan (Including Recruitment and Retention Plan)" && link.target === "Obtain LSPC Approval") {
     const startX = source.x + 100; // right middle of Study Step
     const startY = source.y + 25;
     const midX = startX + 25; // move right
