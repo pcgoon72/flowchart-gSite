@@ -75,15 +75,25 @@
 <script src="https://d3js.org/d3.v7.min.js"></script>
 <script>
   const svg = d3.select("svg");
+  const container = svg.append("g"); // For zoom in/out
   const width = +svg.attr("width");
   const laneHeight = 200;
 
-  // Add swimlanes
-  svg.append("rect").attr("class", "lane").attr("x", 0).attr("y", 50).attr("width", width).attr("height", laneHeight);
-  svg.append("rect").attr("class", "lane").attr("x", 0).attr("y", 300).attr("width", width).attr("height", laneHeight);
+  // Zoom behavior
+  const zoom = d3.zoom()
+  .scaleExtent([0.5, 2])  // Zoom out to 50%, in to 200%
+  .on("zoom", (event) => {
+    container.attr("transform", event.transform);
+  });
 
-  svg.append("text").attr("class", "lane-label").attr("x", 10).attr("y", 70).text("Programme");
-  svg.append("text").attr("class", "lane-label").attr("x", 10).attr("y", 320).text("Study");
+  svg.call(zoom);
+
+  // Add swimlanes
+  container.append("rect").attr("class", "lane").attr("x", 0).attr("y", 50).attr("width", width).attr("height", laneHeight);
+  container.append("rect").attr("class", "lane").attr("x", 0).attr("y", 300).attr("width", width).attr("height", laneHeight);
+
+  container.append("text").attr("class", "lane-label").attr("x", 10).attr("y", 70).text("Programme");
+  container.append("text").attr("class", "lane-label").attr("x", 10).attr("y", 320).text("Study");
 
   const nodes = [
     { id: "Create Study Timelines for GDT", x: 100, y: 100,
@@ -123,7 +133,7 @@
     { source: "Conduct Post LSPC Approval Activities", target: "Review Relevant Docs, Sites, Systems and Trainings" }
   ];
 
-  svg.append("defs").append("marker")
+  container.append("defs").append("marker")
     .attr("id", "arrow")
     .attr("viewBox", "0 0 10 10")
     .attr("refX", 10)
@@ -146,7 +156,7 @@ links.forEach(link => {
     const x2 = target.x + 50; // middle top of Step 7
     const y2 = target.y;
 
-    svg.append("line")
+    container.append("line")
       .attr("x1", x1)
       .attr("y1", y1)
       .attr("x2", x2)
@@ -171,7 +181,7 @@ links.forEach(link => {
       L ${endX} ${endY}
     `;
 
-    svg.append("path")
+    container.append("path")
       .attr("d", pathData)
       .attr("fill", "none")
       .attr("stroke", "#f0f0f0")
@@ -180,7 +190,7 @@ links.forEach(link => {
 
   // Default straight arrows for the rest
   } else {
-    svg.append("line")
+    container.append("line")
       .attr("x1", source.x + 100)
       .attr("y1", source.y + 25)
       .attr("x2", target.x)
@@ -193,7 +203,7 @@ links.forEach(link => {
 
 
 
-  const nodeGroup = svg.selectAll(".node")
+  const nodeGroup = container.selectAll(".node")
     .data(nodes)
     .enter()
     .append("g")
