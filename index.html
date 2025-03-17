@@ -126,11 +126,11 @@ links.forEach(link => {
   const source = nodes.find(n => n.id === link.source);
   const target = nodes.find(n => n.id === link.target);
 
-  // Special case: Step 6 to Study Step (bottom middle to top middle)
+  // Special case: Refine Draft Ops Plan to Further Develop Ops Plan (Including Recruitment and Retention Plan) (bottom middle to top middle)
   if (link.source === "Refine Draft Ops Plan" && link.target === "Further Develop Ops Plan (Including Recruitment and Retention Plan)") {
     const x1 = source.x + 50; // middle bottom of Step 6
     const y1 = source.y + 50;
-    const x2 = target.x + 50; // middle top of Study Step
+    const x2 = target.x + 50; // middle top of Step 7
     const y2 = target.y;
 
     svg.append("line")
@@ -142,7 +142,7 @@ links.forEach(link => {
       .attr("stroke-width", 2)
       .attr("marker-end", "url(#arrow)");
 
-  // Special case: Study Step to Step 7 with two right angles
+  // Special case: Further Develop Ops Plan (Including Recruitment and Retention Plan) to Obtain LSPC Approval with two right angles
   } else if (link.source === "Further Develop Ops Plan (Including Recruitment and Retention Plan)" && link.target === "Obtain LSPC Approval") {
     const startX = source.x + 100; // right middle of Study Step
     const startY = source.y + 25;
