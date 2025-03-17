@@ -86,7 +86,19 @@
   svg.append("text").attr("class", "lane-label").attr("x", 10).attr("y", 320).text("Study");
 
   const nodes = [
-    { id: "Create Study Timelines for GDT", x: 100, y: 100 },
+    { id: "Create Study Timelines for GDT", x: 100, y: 100,
+    details:`
+      <p><strong>A: </strong>If molecule was acquired externally, refer to Acquired External Molecule Transfer (AEMT) process before creating study timelines..</p>
+      <p><strong>B: </strong>Estimate enrollment timelines by requesting draft of CDP and refer to benchmarking information for projections.</p>
+      <p><strong>NOTE:</strong> Systems:</p>
+      <p><strong>NOTE:</strong> Benchmarking Information:</p>
+      <p><strong>NOTE:</strong> Risk Management: It is important to evaluate how much risk there is in the assumptions made. If information isn't available: you can consider a surrogate disease area which has information available.</p>
+      <p><strong>NOTE:</strong> How to Estimate Timelines: Use:</p>
+      <p><strong>C: </strong> Continue to update the study timeline until approved by LSPC</p>
+      <p><strong>NOTE:</strong> Study Timeline Projection Tools:</p>
+      <hr>
+    `
+    },
     { id: "Develop Region/Country Strategy", x: 250, y: 100 },
     { id: "Develop Draft Ops Plan", x: 400, y: 100 },
     { id: "Draft Early Study Budget", x: 550, y: 100 },
@@ -188,7 +200,8 @@ links.forEach(link => {
     .attr("transform", d => `translate(${d.x},${d.y})`)
     .on("click", (event, d) => {
       document.getElementById("modal-title").innerText = d.id;
-      document.getElementById("modal-text").innerText = `Info about ${d.id}`;
+      //document.getElementById("modal-text").innerText = `Info about ${d.id}`;
+      document.getElementById("modal-text").innerHTML = d.details || "No additional info.";
       document.getElementById("infoModal").style.display = "block";
     });
 
